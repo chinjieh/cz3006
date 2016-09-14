@@ -87,7 +87,7 @@ public class SWP {
   /*
   * By Chen Chin Jieh
   */
-  
+
     private boolean no_nak = true;
     private Timer retransmit_timers[] = new Timer[NR_BUFS];
   	private Timer ack_timer = new Timer();
@@ -149,7 +149,7 @@ public class SWP {
 	              in_buf[frame_received.seq % NR_BUFS] = frame_received.info;
 
 	              while (arrived[frame_expected % NR_BUFS]) {
-	                // Pass frames and advance window
+	              	// Pass frames and advance window
 	                to_network_layer(in_buf[frame_expected % NR_BUFS]);
 	                no_nak = true;
 	                arrived[frame_expected % NR_BUFS] = false;
@@ -167,30 +167,30 @@ public class SWP {
 	          }
 
 	          while (between(ack_expected, frame_received.ack, next_frame_to_send)) {
-	          	// Advance lower bound for expected ACKs to match received ACK
+	        		// Advance lower bound for expected ACKs to match received ACK
 	            stop_timer(ack_expected % NR_BUFS);
 	            ack_expected = inc(ack_expected);
 	            enable_network_layer(1); // Free up one buffer slot
 	          }
 
-			      break;
+	          break;
 
-	        case (PEvent.CKSUM_ERR):
+          case (PEvent.CKSUM_ERR):
 	          if (no_nak)
 	            send_frame(PFrame.NAK, 0, frame_expected, out_buf);
 	          break;
 
-	        case (PEvent.TIMEOUT): 
+          case (PEvent.TIMEOUT): 
 	          send_frame(PFrame.DATA, oldest_frame, frame_expected, out_buf);
 	          break;
 
-		      case (PEvent.ACK_TIMEOUT): 
+          case (PEvent.ACK_TIMEOUT): 
 	          send_frame(PFrame.ACK, 0, frame_expected, out_buf);
 	          break;
 
 	        default: 
-			      System.out.println("SWP: undefined event type = " + event.type); 
-			      System.out.flush();
+	        	System.out.println("SWP: undefined event type = " + event.type); 
+	        	System.out.flush();
 	          break;
 	    }
 	  }
@@ -201,13 +201,13 @@ public class SWP {
     return (((a <= number) && (number < b)) || ((b < a) && (a <= number)) || ((number < b) && (b < a)));
   }
 
-  /* Helper function to increment a number, resetting from 0 if MAX_SEQ+1 is exceeded */
+  /* Increments a number, resetting from 0 if MAX_SEQ is exceeded */
   private int inc(int number) {
     int new_number = (number + 1) % (MAX_SEQ+1);
     return new_number;
   }
 
-  /* Helper function to send a frame to the physical layer */
+  /* Sends a frame to the physical layer */
   private void send_frame(int frame_kind, int frame_nr, int frame_expected, Packet[] packet_buffer) {
     PFrame frame = new PFrame();
   
