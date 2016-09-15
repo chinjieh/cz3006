@@ -108,7 +108,7 @@ public class SWP {
       boolean arrived[] = new boolean [NR_BUFS];
 
 
-      // Instantiate retransmission timers
+      // Instantiate arrays: arrived frames & retransmission timers
       for (int i=0; i < NR_BUFS; i++) {
         arrived[i] = false;
         retransmit_timers[i] = new Timer();
